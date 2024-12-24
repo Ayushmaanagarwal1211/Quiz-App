@@ -1,8 +1,8 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { home } from '../../reducer/slice'
+import { home } from '../reducer/gameSlice'
 
-export default function GameOver({id}) {
+export default function GameOver({game_state}) {
   let dispatch = useDispatch()
   function handleClick(){
     dispatch(home())
@@ -11,9 +11,7 @@ export default function GameOver({id}) {
   return (
     <>
       <div className='flex flex-col gap-3'>
-        {
-          id >= 10 ? <div >Congratulations You Won</div> : <div className='text-2xl'>GameOver <br></br>You Loose</div>
-        }
+        <div >{game_state == "WON" ? "Congratulations You Won" : "You Loose"}</div>
         <div className='cursor-pointer border-[1px] border-black p-4' onClick={handleClick}>Home</div>
       </div>
     </>

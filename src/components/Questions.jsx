@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Options from './Options'
-import { useDispatch } from 'react-redux'
-import { gameOver, nextQuestion } from '../../reducer/slice'
-import Timer from './Timer'
+import { useDispatch, useSelector } from 'react-redux'
+import { gameOver, nextQuestion, selectQuestions } from '../reducer/gameSlice'
 function createOptions(question){
     let arr = new Array(4)
     let index = 0
@@ -15,20 +14,30 @@ function createOptions(question){
     return arr
 }
 
-export default function Questions({question,id}) {
-    const options = createOptions(question)
-    const [showTimer,  setShowTimer] = useState(true)
+export default function Questions() {
+    const question = useSelector(state=> selectQuestions(state))
     const dispatch = useDispatch()
+    const [time,setTime] = useState(10)
+    const [options,setOptions] = useState([])
+
+    useEffect(()=>{
+        setOptions(createOptions(question))
+        const timeOut = setTimeout(()=>handleGameOver(),10000)
+        const interval = setInterval(()=>setTime((prev)=>prev-1),1000)
+        return ()=>{
+          clearTimeout(timeOut)
+          clearInterval(interval)
+        }
+      },[])
 
     function handleCheckAnswer(answer){
         if(answer == question.correct_answer){
-            setShowTimer(false)
             dispatch(nextQuestion())
-            setTimeout(()=>setShowTimer(true),0)
             return
         }
         return handleGameOver()
     }
+
     function handleGameOver(){
         dispatch(gameOver())
     }
@@ -36,7 +45,7 @@ export default function Questions({question,id}) {
     <>
         <div className=' flex flex-col '>
 
-       {showTimer &&  <div className=" rounded-r-full m-auto mb-[20px] rounded-t-full rounded-l-full bg-white w-[40px] h-[40px] flex justify-center items-center"><Timer gameOver = {handleGameOver} id={id}/></div>}
+      <div className=" rounded-r-full m-auto mb-[20px] rounded-t-full rounded-l-full bg-white w-[40px] h-[40px] flex justify-center items-center" > {time}</div>
         <div className=' rounded-3xl bg-white p-4 text-center border-black border-[1px] '>{question.question}</div>
        <div className='grid grid-cols-2 gap-2 mt-4'>
         {
