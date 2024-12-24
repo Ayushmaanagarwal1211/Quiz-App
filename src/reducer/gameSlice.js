@@ -1,6 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit'
 
-let slice = createSlice({
+const slice = createSlice({
     initialState:{
         questions : [],
         id : 0,
