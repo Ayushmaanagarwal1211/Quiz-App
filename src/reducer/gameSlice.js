@@ -4,7 +4,8 @@ let slice = createSlice({
     initialState:{
         questions : [],
         id : 0,
-        gameState : "HOME"
+        gameState : "HOME",
+        score : 0
     },
     name : "quiz",
     reducers : {
@@ -12,30 +13,28 @@ let slice = createSlice({
             state.gameState = "START_GAME"
         },
         gameOver: (state)=>{
-            reset(state,"Loose")
+            reset(state)
         },
         home: (state)=>{
             state.gameState = "HOME"
+            state.score = 0
         },
-        nextQuestion : (state)=>{
+        nextQuestion : (state,action)=>{
             state.id++
-            if(state.id >= state.questions.length){
-                reset(state,"WON")
-            }
+            action.payload && state.score++
+            state.id >= state.questions.length && reset(state) 
         },
         fill :  (state,action)=>{
             let questions = []
-            for(let {question, incorrect_answers, correct_answer} of action.payload){
-                questions.push({question, correct_answer, incorrect_answers})
-            }
+            questions = action.payload.map(({question,incorrect_answers,correct_answer})=>{return {question, incorrect_answers, correct_answer}})
             state.questions = questions
         }
     }
 })
-function reset(state,ending_state){
+function reset(state){
     state.id = 0
     state.questions = []
-    state.gameState = ending_state
+    state.gameState = "GAME_OVER"
 }
 export function selectId(state){
     return state.game.id
@@ -45,6 +44,9 @@ export function selectgameState(state){
 }
 export function selectQuestions(state){
     return state.game.questions[state.game.id]
+}
+export function selectScore(state){
+    return state.game.score
 }
 
 export const {startGame, gameOver,fill, checkAnswer, nextQuestion,home} = slice.actions

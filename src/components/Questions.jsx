@@ -22,7 +22,7 @@ export default function Questions() {
 
     useEffect(()=>{
         setOptions(createOptions(question))
-        const timeOut = setTimeout(()=>handleGameOver(),10000)
+        const timeOut = setTimeout(()=>dispatch(nextQuestion(false)),10000)
         const interval = setInterval(()=>setTime((prev)=>prev-1),1000)
         return ()=>{
           clearTimeout(timeOut)
@@ -31,16 +31,9 @@ export default function Questions() {
       },[])
 
     function handleCheckAnswer(answer){
-        if(answer == question.correct_answer){
-            dispatch(nextQuestion())
-            return
-        }
-        return handleGameOver()
+        dispatch(nextQuestion(answer == question.correct_answer))
     }
 
-    function handleGameOver(){
-        dispatch(gameOver())
-    }
   return (
     <>
         <div className=' flex flex-col '>

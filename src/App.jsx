@@ -15,7 +15,7 @@ function App() {
       {
         game_state == "HOME" ? <StartGame/> : (
           (game_state == "START_GAME") ? <Questions  key={id}/> : 
-          <GameOver game_state={game_state}/>
+          <GameOver/>
         )
       }
     </div>

@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux'
 export default function StartGame() {
     const dispatch = useDispatch()
     const [isLoaded,setIsLoaded] = useState(true)
+    
     async function fetchQuestions() {
       const response = await fetch("https://opentdb.com/api.php?amount=10&type=multiple");
       const data = await response.json();
@@ -12,9 +13,11 @@ export default function StartGame() {
       setIsLoaded(false)
       return ;
     }
+
     async function handleClick(){
         dispatch(startGame())
     }
+    
     useEffect(()=>{
       fetchQuestions()
     },[])
